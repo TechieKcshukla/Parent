@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduAI — Parent Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0b0e17;--ink2:#141720;--ink3:#1c2030;--ink4:#242840;
+  --bd:#2c3148;--bd2:#1f2338;
+  --jade:#00e5a0;--amber:#ffb930;--coral:#ff6b6b;--violet:#a78bfa;--sky:#38bdf8;
+  --t1:#eef0f8;--t2:#8890a8;--t3:#4a5068;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+  --sw:224px;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--ink);color:var(--t1);font-family:var(--fb);font-size:14px;line-height:1.5}
+button{cursor:pointer;border:none;background:none;font-family:var(--fb);color:inherit}
+textarea{font-family:var(--fb)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--ink2)}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes countUp{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes heatIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@keyframes pulseCoral{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,.5)}50%{box-shadow:0 0 0 6px rgba(255,107,107,0)}}
+@keyframes pulseAmber{0%,100%{box-shadow:0 0 0 0 rgba(255,185,48,.5)}50%{box-shadow:0 0 0 6px rgba(255,185,48,0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes barIn{from{width:0}to{width:var(--w)}}
+
+#app{display:flex;height:100vh;overflow:hidden}
+#sidebar{width:var(--sw);min-width:var(--sw);height:100vh;background:var(--ink);border-right:1px solid var(--bd2);display:flex;flex-direction:column;z-index:50;flex-shrink:0}
+.s-logo{padding:18px 16px 13px;border-bottom:1px solid var(--bd2)}
+.s-logomark{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.s-logoicon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--jade),var(--violet));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.s-logotxt{font-family:var(--fd);font-size:18px;font-weight:800;color:var(--jade);letter-spacing:-.5px}
+.s-badge{font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--amber);background:rgba(255,185,48,.12);border:1px solid rgba(255,185,48,.28);padding:2px 7px;border-radius:100px;display:inline-block}
+.pcard{background:var(--ink3);border:1px solid var(--bd);border-radius:12px;padding:10px 11px;margin:11px 12px 0}
+.pcard-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pav{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--violet),#6d28d9);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.cchip{display:flex;align-items:center;gap:6px;padding:6px 9px;border-radius:8px;background:var(--ink4);border:1px solid var(--bd);width:100%;transition:border-color .2s}
+.cchip:hover{border-color:var(--violet)}
+nav{flex:1;padding:11px 9px;overflow-y:auto}
+.ns{font-size:9.5px;font-weight:700;letter-spacing:.07em;color:var(--t3);text-transform:uppercase;padding:0 11px;margin:11px 0 4px}
+.ni{display:flex;align-items:center;gap:9px;width:100%;padding:8px 11px;border-radius:9px;background:transparent;border:1px solid transparent;color:var(--t2);font-size:13px;font-weight:400;margin-bottom:2px;text-align:left;transition:all .2s}
+.ni:hover{background:rgba(0,229,160,.05);color:var(--t1)}
+.ni.active{background:rgba(0,229,160,.08);border-color:rgba(0,229,160,.22);color:var(--jade);font-weight:600}
+.nb{margin-left:auto;min-width:17px;height:17px;border-radius:100px;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.nb.red{background:rgba(255,107,107,.2);color:var(--coral)}
+.nb.green{background:rgba(0,229,160,.15);color:var(--jade)}
+.ndot{width:5px;height:5px;border-radius:50%;background:var(--jade);margin-left:auto;flex-shrink:0}
+.sfooter{padding:9px;border-top:1px solid var(--bd2)}
+.fuser{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:9px;cursor:pointer;transition:background .2s}
+.fuser:hover{background:var(--ink3)}
+.fav{width:27px;height:27px;border-radius:7px;background:linear-gradient(135deg,var(--violet),#6d28d9);display:flex;align-items:center;justify-content:center;font-size:13px}
+
+#main{flex:1;overflow-y:auto;padding:24px 26px;min-width:0}
+#main::-webkit-scrollbar{width:4px}
+.page{display:none}
+.page.active{display:block;animation:fadeUp .4s ease both}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.ptitle{font-family:var(--fd);font-size:21px;font-weight:800;color:var(--t1);letter-spacing:-.4px;margin:0}
+.psub{color:var(--t2);font-size:11.5px;margin:3px 0 0}
+.tbr{display:flex;align-items:center;gap:8px}
+.tbtn{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:9px;background:var(--ink3);border:1px solid var(--bd);color:var(--t2);font-size:12px;cursor:pointer;transition:all .2s;font-weight:500}
+.tbtn:hover{border-color:var(--jade);color:var(--t1)}
+.nbtn{position:relative;padding:7px 10px}
+.ndot2{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--coral);border:2px solid var(--ink);animation:pulseCoral 2s infinite}
+
+.card{background:var(--ink2);border:1px solid var(--bd);border-radius:15px;padding:17px;transition:border-color .2s}
+.ct{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--t1);margin:0 0 13px;display:flex;align-items:center;gap:6px}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:15px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;margin-bottom:15px}
+.g21{display:grid;grid-template-columns:1.6fr 1fr;gap:13px;margin-bottom:15px}
+.g3s{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:15px}
+.mb15{margin-bottom:15px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--ink3),var(--ink4));border:1px solid var(--bd);border-radius:18px;padding:20px;margin-bottom:15px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,160,.07),transparent 70%);pointer-events:none}
+.hinner{display:flex;align-items:center;gap:16px;position:relative;z-index:1}
+.hav{width:58px;height:58px;border-radius:13px;background:linear-gradient(135deg,var(--jade),var(--violet));display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 0 0 3px rgba(0,229,160,.18);animation:float 4s ease-in-out infinite;flex-shrink:0}
+.hinfo{flex:1;min-width:0}
+.hname{font-family:var(--fd);font-size:19px;font-weight:800;color:var(--t1);letter-spacing:-.3px}
+.hmeta{display:flex;gap:6px;margin:4px 0 9px;flex-wrap:wrap}
+.hchip{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px}
+.hchip.j{background:rgba(0,229,160,.12);color:var(--jade);border:1px solid rgba(0,229,160,.22)}
+.hchip.v{background:rgba(167,139,250,.12);color:var(--violet);border:1px solid rgba(167,139,250,.22)}
+.hchip.a{background:rgba(255,185,48,.12);color:var(--amber);border:1px solid rgba(255,185,48,.22)}
+.hstats{display:flex;gap:16px;flex-wrap:wrap}
+.hsv{font-family:var(--fd);font-size:19px;font-weight:800;line-height:1}
+.hsl{font-size:9px;color:var(--t2);margin-top:2px}
+.hdiv{width:1px;height:33px;background:var(--bd);align-self:center}
+.hring{position:relative;width:84px;height:84px;flex-shrink:0}
+.hring svg{transform:rotate(-90deg)}
+.rt{fill:none;stroke:var(--bd);stroke-width:6}
+.rf{fill:none;stroke-width:6;stroke-linecap:round;stroke-dasharray:283;stroke-dashoffset:283;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
+.rf.j{stroke:var(--jade);filter:drop-shadow(0 0 4px rgba(0,229,160,.45))}
+.rctr{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.rpct{font-family:var(--fd);font-size:15px;font-weight:800;color:var(--t1);line-height:1}
+.rlbl{font-size:7.5px;color:var(--t2);letter-spacing:.04em}
+
+/* KPI */
+.kgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:15px}
+.kc{background:var(--ink2);border:1px solid var(--bd);border-radius:14px;padding:14px;transition:all .2s;position:relative;overflow:hidden}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0}
+.kc.j::before{background:linear-gradient(90deg,var(--jade),transparent)}
+.kc.v::before{background:linear-gradient(90deg,var(--violet),transparent)}
+.kc.a::before{background:linear-gradient(90deg,var(--amber),transparent)}
+.kc.c::before{background:linear-gradient(90deg,var(--coral),transparent)}
+.kc.s::before{background:linear-gradient(90deg,var(--sky),transparent)}
+.kc:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.28)}
+.kh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ki{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.ki.j{background:rgba(0,229,160,.1)}.ki.v{background:rgba(167,139,250,.1)}.ki.a{background:rgba(255,185,48,.1)}.ki.c{background:rgba(255,107,107,.1)}.ki.s{background:rgba(56,189,248,.1)}
+.kt{font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:100px}
+.kt.up{background:rgba(0,229,160,.12);color:var(--jade)}.kt.dn{background:rgba(255,107,107,.12);color:var(--coral)}
+.kv{font-family:var(--fd);font-size:23px;font-weight:800;line-height:1;animation:countUp .6s ease both}
+.kl{font-size:11px;font-weight:600;color:var(--t1);margin-top:3px}
+.ks{font-size:9.5px;color:var(--t3);margin-top:2px}
+
+/* SUBJECTS */
+.sr{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.sr:last-child{margin-bottom:0}
+.sicon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.sname{width:80px;flex-shrink:0;font-size:11.5px;font-weight:600;color:var(--t1)}
+.sbw{flex:1}
+.sbt{height:6px;background:var(--bd2);border-radius:100px;overflow:hidden}
+.sbf{height:100%;border-radius:100px;width:0;transition:width 1s ease}
+.spct{width:30px;text-align:right;font-family:var(--fm);font-size:10px;flex-shrink:0}
+.strend{width:16px;text-align:center;font-size:11px;flex-shrink:0}
+.stag{font-size:8.5px;font-weight:600;padding:2px 5px;border-radius:100px;flex-shrink:0}
+.stag.strong{background:rgba(0,229,160,.12);color:var(--jade)}
+.stag.weak{background:rgba(255,107,107,.12);color:var(--coral)}
+.stag.avg{background:rgba(136,144,168,.1);color:var(--t2)}
+
+/* RADIALS */
+.rrow{display:flex;justify-content:space-around;padding:5px 0}
+.ritem{display:flex;flex-direction:column;align-items:center;gap:4px}
+.rsvg{width:58px;height:58px}
+.rtrack{fill:none;stroke:var(--bd2);stroke-width:6}
+.rarc{fill:none;stroke-width:6;stroke-linecap:round;stroke-dasharray:157;transition:stroke-dashoffset 1s ease}
+.rlabel{font-size:9px;color:var(--t2);text-align:center;line-height:1.3}
+
+/* STREAK */
+.streak{display:flex;align-items:center;gap:11px;padding:12px;background:var(--ink3);border-radius:10px;margin-bottom:11px}
+.sfire{font-size:26px;animation:float 3s ease-in-out infinite}
+.sval{font-family:var(--fd);font-size:30px;font-weight:800;color:var(--amber);line-height:1}
+
+/* HEATMAP */
+.hmap{display:flex;flex-direction:column;gap:3px}
+.hmrow{display:flex;align-items:center;gap:3px}
+.hmdl{width:21px;font-size:8px;color:var(--t3);text-align:right;flex-shrink:0}
+.hmcells{display:flex;gap:2px;flex:1}
+.hmc{flex:1;aspect-ratio:1;border-radius:2px;transition:transform .15s;cursor:pointer;animation:heatIn .3s ease both}
+.hmc:hover{transform:scale(1.35);z-index:2}
+.hmc.l0{background:var(--bd2)}.hmc.l1{background:rgba(0,229,160,.2)}.hmc.l2{background:rgba(0,229,160,.45)}.hmc.l3{background:rgba(0,229,160,.7)}.hmc.l4{background:var(--jade)}
+.hmleg{display:flex;align-items:center;gap:4px;margin-top:7px;justify-content:flex-end}
+.hmleg span{font-size:8.5px;color:var(--t3)}
+.lc{width:9px;height:9px;border-radius:2px}
+.wlabs{display:flex;gap:2px;padding-left:24px;margin-bottom:2px}
+.wlab{flex:1;font-size:8px;color:var(--t3);text-align:center}
+
+/* TPS */
+.trow{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.trow:last-child{margin-bottom:0}
+.tname{font-size:11px;color:var(--t2);width:75px;flex-shrink:0}
+.tbt{height:5px;background:var(--bd2);border-radius:100px;overflow:hidden;flex:1}
+.tbf{height:100%;border-radius:100px;transition:width 1s ease}
+.ttime{font-family:var(--fm);font-size:9.5px;color:var(--t2);width:28px;text-align:right;flex-shrink:0}
+
+/* SCORES TABLE */
+.stbl{width:100%;border-collapse:collapse}
+.stbl th{font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;padding:0 6px 8px;text-align:left;border-bottom:1px solid var(--bd2)}
+.stbl td{padding:8px 6px;border-bottom:1px solid rgba(44,49,72,.5);font-size:11.5px;color:var(--t2);vertical-align:middle}
+.stbl td:first-child{color:var(--t1);font-weight:500}
+.stbl tr:last-child td{border-bottom:none}
+.spill{display:inline-block;padding:2px 8px;border-radius:100px;font-size:10.5px;font-weight:700;font-family:var(--fm)}
+.spill.a{background:rgba(0,229,160,.15);color:var(--jade)}.spill.b{background:rgba(56,189,248,.15);color:var(--sky)}.spill.c{background:rgba(255,185,48,.15);color:var(--amber)}.spill.d{background:rgba(255,107,107,.15);color:var(--coral)}
+
+/* SCATTER */
+.swrap{position:relative;height:130px;margin-top:5px}
+.spt{position:absolute;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);cursor:pointer;transition:transform .2s;border:2px solid rgba(255,255,255,.15)}
+.spt:hover{transform:translate(-50%,-50%) scale(1.7);z-index:10}
+.stip{position:absolute;background:var(--ink4);border:1px solid var(--bd);border-radius:7px;padding:4px 8px;font-size:9.5px;color:var(--t2);pointer-events:none;white-space:nowrap;z-index:20;display:none}
+
+/* ALERTS */
+.ai{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid transparent;margin-bottom:7px;cursor:pointer;transition:all .2s}
+.ai:last-child{margin-bottom:0}
+.ai:hover{transform:translateX(2px)}
+.ai.critical{background:rgba(255,107,107,.06);border-color:rgba(255,107,107,.2)}
+.ai.warning{background:rgba(255,185,48,.06);border-color:rgba(255,185,48,.2)}
+.ai.info{background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.2)}
+.aic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.aic.critical{background:rgba(255,107,107,.15)}.aic.warning{background:rgba(255,185,48,.15)}.aic.info{background:rgba(56,189,248,.15)}
+.atitle{font-size:11.5px;font-weight:600;color:var(--t1)}
+.adesc{font-size:10px;color:var(--t2);margin-top:1px}
+.atime{font-size:9.5px;color:var(--t3);flex-shrink:0}
+.adot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.adot.critical{background:var(--coral);animation:pulseCoral 2s infinite}
+.adot.warning{background:var(--amber);animation:pulseAmber 2s infinite}
+.adot.info{background:var(--sky)}
+
+/* GOALS */
+.gi{margin-bottom:12px}.gi:last-child{margin-bottom:0}
+.gh{display:flex;justify-content:space-between;margin-bottom:5px}
+.gn{font-size:11.5px;font-weight:500;color:var(--t1)}
+.gp{font-family:var(--fm);font-size:11.5px;font-weight:600}
+.gtr{height:6px;background:var(--bd2);border-radius:100px;overflow:hidden}
+.gf{height:100%;border-radius:100px;width:0;transition:width 1.2s ease}
+.gsub{font-size:9.5px;color:var(--t3);margin-top:3px}
+.mwrap{text-align:center;padding-top:13px;border-top:1px solid var(--bd2);margin-top:13px}
+.mpct{font-family:var(--fd);font-size:36px;font-weight:800;color:var(--jade);line-height:1}
+.mlbl{font-size:10.5px;color:var(--t2);margin:3px 0 12px}
+.mbar{height:7px;background:var(--bd2);border-radius:100px;overflow:hidden;margin-bottom:4px}
+.mfill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--jade),var(--violet));width:0;transition:width 1.3s ease}
+.mmeta{display:flex;justify-content:space-between;font-size:9px;color:var(--t3)}
+
+/* INSIGHTS */
+.ilist{display:flex;flex-direction:column;gap:7px}
+.iitem{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:9px;border:1px solid transparent;transition:all .2s}
+.iitem:hover{transform:translateX(2px)}
+.iitem.strength{background:rgba(0,229,160,.05);border-color:rgba(0,229,160,.14)}
+.iitem.weakness{background:rgba(255,107,107,.05);border-color:rgba(255,107,107,.14)}
+.iitem.recommend{background:rgba(167,139,250,.05);border-color:rgba(167,139,250,.14)}
+.idot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.idot.j{background:var(--jade)}.idot.c{background:var(--coral)}.idot.v{background:var(--violet)}
+.ititle{font-size:11.5px;font-weight:600;color:var(--t1);margin-bottom:1px}
+.idesc{font-size:10px;color:var(--t2);line-height:1.4}
+
+/* REPORTS */
+.rc{background:var(--ink2);border:1px solid var(--bd);border-radius:13px;padding:15px;transition:all .2s;cursor:pointer}
+.rc:hover{border-color:rgba(0,229,160,.35);transform:translateY(-1px)}
+.rc.active{border-color:var(--jade);background:rgba(0,229,160,.04)}
+.rctitle{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.rcdesc{font-size:10.5px;color:var(--t2);line-height:1.4}
+.rcfoot{display:flex;justify-content:space-between;margin-top:9px;padding-top:9px;border-top:1px solid var(--bd2)}
+.aibadge{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;color:var(--jade);background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.2);padding:3px 9px;border-radius:100px;margin-bottom:11px}
+.rtext{font-size:12px;color:var(--t2);line-height:1.7;white-space:pre-wrap}
+.spinner{width:22px;height:22px;border:3px solid var(--bd);border-top-color:var(--jade);border-radius:50%;animation:spin .7s linear infinite}
+
+/* TABS */
+.tabrow{display:flex;gap:3px;background:var(--ink3);padding:3px;border-radius:10px;margin-bottom:14px}
+.tabb{flex:1;padding:6px 9px;border-radius:7px;border:none;background:transparent;color:var(--t2);font-size:11.5px;font-weight:500;cursor:pointer;transition:all .2s;font-family:var(--fb)}
+.tabb.active{background:var(--ink);color:var(--jade);font-weight:600;box-shadow:0 2px 7px rgba(0,0,0,.3)}
+.tabb:hover:not(.active){color:var(--t1)}
+
+/* STAT ROW */
+.statrow{display:flex;gap:11px;margin-bottom:14px}
+.statbox{flex:1;background:var(--ink3);border:1px solid var(--bd);border-radius:11px;padding:12px;text-align:center}
+.sbval{font-family:var(--fd);font-size:21px;font-weight:800;line-height:1}
+.sblbl{font-size:9.5px;color:var(--t2);margin-top:3px}
+
+/* SDC - subject detail card */
+.sdc{background:var(--ink3);border:1px solid var(--bd);border-radius:12px;padding:13px;transition:all .2s}
+.sdc:hover{transform:translateY(-1px)}
+.sdci{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sdcbt{height:5px;background:var(--bd2);border-radius:100px;overflow:hidden}
+.sdcbf{height:100%;border-radius:100px;width:0;transition:width 1s ease}
+
+/* TOGGLE */
+.toggle{width:36px;height:20px;border-radius:100px;background:var(--bd);border:none;cursor:pointer;position:relative;transition:background .25s;flex-shrink:0}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .25s}
+.toggle.on{background:var(--jade)}
+.toggle.on::after{transform:translateX(16px)}
+
+/* SETTINGS */
+.sinput{background:var(--ink3);border:1px solid var(--bd);border-radius:8px;padding:6px 11px;font-size:12px;color:var(--t1);font-family:var(--fb);width:190px;outline:none;transition:border-color .2s}
+.sinput:focus{border-color:var(--jade)}
+.sselect{background:var(--ink3);border:1px solid var(--bd);border-radius:8px;padding:6px 11px;font-size:11.5px;color:var(--t1);font-family:var(--fb);outline:none;cursor:pointer}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(44,49,72,.4)}
+.srow:last-child{border-bottom:none}
+.slbl{font-size:12px;color:var(--t1)}
+.ssub{font-size:10px;color:var(--t2);margin-top:1px}
+.bsave{padding:7px 16px;border-radius:9px;background:linear-gradient(135deg,var(--jade),#00b87a);border:none;color:#0b0e17;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--fd);margin-top:9px}
+.bdanger{padding:7px 13px;border-radius:9px;background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.25);color:var(--coral);font-size:11.5px;font-weight:600;cursor:pointer}
+.bdanger:hover{background:rgba(255,107,107,.2)}
+
+/* CHAT */
+.chatmsg{display:flex;gap:9px;align-items:flex-end}
+.chatmsg.sent{flex-direction:row-reverse}
+.cbub{max-width:68%;padding:8px 11px;border-radius:12px;font-size:12px;line-height:1.5}
+.cbub.recv{background:var(--ink3);border:1px solid var(--bd);border-bottom-left-radius:3px;color:var(--t1)}
+.cbub.sent{background:linear-gradient(135deg,rgba(0,229,160,.16),rgba(0,229,160,.09));border:1px solid rgba(0,229,160,.23);border-bottom-right-radius:3px;color:var(--t1)}
+.cav2{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:var(--ink4);border:1px solid var(--bd)}
+.cmeta{font-size:9px;color:var(--t3);margin-top:2px}
+.cinpwrap{display:flex;gap:8px;margin-top:11px;padding-top:11px;border-top:1px solid var(--bd2)}
+.cinp{flex:1;background:var(--ink3);border:1px solid var(--bd);border-radius:9px;padding:8px 12px;font-size:12.5px;color:var(--t1);font-family:var(--fb);outline:none;resize:none;transition:border-color .2s}
+.cinp:focus{border-color:var(--jade)}
+.bsend{padding:8px 14px;border-radius:9px;background:linear-gradient(135deg,var(--jade),#00b87a);border:none;color:#0b0e17;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--fd)}
+
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink4);border:1px solid var(--bd);border-radius:7px;padding:4px 8px;font-size:10px;color:var(--t2);white-space:nowrap;z-index:100;pointer-events:none;animation:fadeIn .15s ease}
+</style>
+</head>
+<body>
+<div id="app">
+<aside id="sidebar">
+  <div class="s-logo">
+    <div class="s-logomark"><div class="s-logoicon">🎓</div><span class="s-logotxt">EduAI</span></div>
+    <div class="s-badge">PARENT PORTAL</div>
+  </div>
+  <div class="pcard">
+    <div class="pcard-top">
+      <div class="pav">👩</div>
+      <div><div style="font-size:12px;font-weight:600;color:var(--t1)">Priya Sharma</div><div style="font-size:10px;color:var(--t2)">Parent · Verified ✓</div></div>
+    </div>
+    <div style="font-size:9.5px;color:var(--t3);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px">Monitoring</div>
+    <button class="cchip"><span style="font-size:14px">🦁</span><div style="flex:1;text-align:left"><div style="font-size:11.5px;font-weight:600;color:var(--t1)">Arjun Sharma</div><div style="font-size:9.5px;color:var(--t2)">Class 10 · CBSE</div></div><span style="color:var(--t3);font-size:11px">⌄</span></button>
+  </div>
+  <nav>
+    <div class="ns">Overview</div>
+    <button class="ni active" onclick="nav('dashboard',this)"><span>📊</span>Dashboard<span class="ndot"></span></button>
+    <button class="ni" onclick="nav('reports',this)"><span>📈</span>Reports<span class="nb green">3</span></button>
+    <button class="ni" onclick="nav('alerts',this)"><span>🔔</span>Alerts<span class="nb red" id="abadge">4</span></button>
+    <div class="ns">Academics</div>
+    <button class="ni" onclick="nav('subjects',this)"><span>📚</span>Subjects</button>
+    <button class="ni" onclick="nav('assessments',this)"><span>📝</span>Assessments</button>
+    <button class="ni" onclick="nav('goals',this)"><span>🎯</span>Goals</button>
+    <div class="ns">Account</div>
+    <button class="ni" onclick="nav('settings',this)"><span>⚙️</span>Settings</button>
+    <button class="ni" onclick="nav('chat',this)"><span>💬</span>Teacher Chat</button>
+  </nav>
+  <div class="sfooter">
+    <div class="fuser" onclick="nav('settings',document.querySelector('[onclick*=settings]'))">
+      <div class="fav">👩</div>
+      <div><div style="font-size:11.5px;font-weight:600;color:var(--t1)">Priya Sharma</div><div style="font-size:9.5px;color:var(--t2)">priya@gmail.com</div></div>
+    </div>
+  </div>
+</aside>
+
+<main id="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="topbar">
+    <div><h1 class="ptitle">Parent Dashboard</h1><p class="psub">Last updated: Today, 9:42 AM · Week 11, March 2026</p></div>
+    <div class="tbr">
+      <button class="tbtn" onclick="nav('reports',document.querySelectorAll('.ni')[1])">📅 Reports</button>
+      <button class="tbtn">📤 Share</button>
+      <button class="tbtn nbtn" onclick="nav('alerts',document.querySelectorAll('.ni')[2])">🔔<span class="ndot2"></span></button>
+    </div>
+  </div>
+  <div class="hero mb15">
+    <div class="hinner">
+      <div class="hav">🦁</div>
+      <div class="hinfo">
+        <div class="hname">Arjun Sharma</div>
+        <div class="hmeta"><span class="hchip j">Class 10</span><span class="hchip v">CBSE Board</span><span class="hchip a">Science Stream</span></div>
+        <div class="hstats">
+          <div><div class="hsv" style="color:var(--jade)">87%</div><div class="hsl">Overall Score</div></div>
+          <div class="hdiv"></div>
+          <div><div class="hsv" style="color:var(--violet)">+6%</div><div class="hsl">Weekly Progress</div></div>
+          <div class="hdiv"></div>
+          <div><div class="hsv" style="color:var(--amber)">18.5h</div><div class="hsl">Study/Week</div></div>
+          <div class="hdiv"></div>
+          <div><div class="hsv" style="color:var(--sky)">23</div><div class="hsl">Tests Done</div></div>
+        </div>
+      </div>
+      <div class="hring" data-tip="Overall Performance Score">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle class="rt" cx="50" cy="50" r="45"/><circle class="rf j" cx="50" cy="50" r="45" id="hring"/></svg>
+        <div class="rctr"><div class="rpct">87%</div><div class="rlbl">SCORE</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="kgrid">
+    <div class="kc j"><div class="kh"><div class="ki j">📊</div><span class="kt up">↑ 4%</span></div><div class="kv" style="color:var(--jade)">87%</div><div class="kl">Avg. Score</div><div class="ks">All subjects</div></div>
+    <div class="kc v"><div class="kh"><div class="ki v">🔥</div><span class="kt up">↑ 2d</span></div><div class="kv" style="color:var(--violet)">92%</div><div class="kl">Consistency</div><div class="ks">14-day streak</div></div>
+    <div class="kc a"><div class="kh"><div class="ki a">🎯</div><span class="kt up">↑ 3%</span></div><div class="kv" style="color:var(--amber)">84%</div><div class="kl">Test Accuracy</div><div class="ks">Last 10 tests</div></div>
+    <div class="kc c"><div class="kh"><div class="ki c">✅</div><span class="kt dn">↓ 5%</span></div><div class="kv" style="color:var(--coral)">71%</div><div class="kl">Completion</div><div class="ks">Assignments</div></div>
+    <div class="kc s"><div class="kh"><div class="ki s">🧠</div><span class="kt up">↑ 8%</span></div><div class="kv" style="color:var(--sky)">79</div><div class="kl">Focus Score</div><div class="ks">AI metric</div></div>
+  </div>
+  <div class="g21">
+    <div class="card"><div class="ct">📚 Subject-wise Performance</div><div id="db-subj"></div></div>
+    <div style="display:flex;flex-direction:column;gap:13px">
+      <div class="card" style="flex:1"><div class="ct">🎓 Performance Overview</div><div class="rrow" id="db-radials"></div></div>
+      <div class="card" style="padding:14px"><div class="streak"><div class="sfire">🔥</div><div><div class="sval">14</div><div style="font-size:11px;color:var(--t2);margin-top:2px">Day Streak</div><div style="font-size:9.5px;color:var(--t3);margin-top:2px">Best: 21 days 🏆</div></div></div><div style="display:flex;gap:3px" id="db-streak"></div></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">📅 Weekly Activity Heatmap</div><div class="wlabs" id="db-wl"></div><div class="hmap" id="db-hm"></div><div class="hmleg"><span>Less</span><div class="lc" style="background:var(--bd2)"></div><div class="lc" style="background:rgba(0,229,160,.2)"></div><div class="lc" style="background:rgba(0,229,160,.45)"></div><div class="lc" style="background:rgba(0,229,160,.7)"></div><div class="lc" style="background:var(--jade)"></div><span>More</span></div></div>
+    <div class="card"><div class="ct">⏱️ Time per Subject (This Week)</div><div id="db-tps"></div></div>
+  </div>
+  <div class="g21">
+    <div class="card">
+      <div class="ct">📝 Recent Assessments</div>
+      <table class="stbl"><thead><tr><th>Test</th><th>Subject</th><th>Score</th><th>Accuracy</th><th>Rank</th><th>Date</th></tr></thead><tbody id="db-scores"></tbody></table>
+      <div style="margin-top:13px"><div class="ct" style="margin-bottom:9px">📉 Score Trend</div><div style="position:relative;height:110px"><svg id="db-trend" viewBox="0 0 400 110" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg></div></div>
+      <div style="margin-top:13px"><div class="ct" style="margin-bottom:5px">⚡ Accuracy vs Speed</div><div class="swrap" id="db-scatter"><div class="stip" id="db-stip"></div></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:13px">
+      <div class="card" style="flex:1"><div class="ct">🔔 Alerts</div><div id="db-alerts"></div></div>
+      <div class="card"><div class="ct">🎯 Goal Tracking</div><div id="db-goals"></div><div class="mwrap"><div class="mpct">78%</div><div class="mlbl">Monthly Completion · March 2026</div><div class="mbar"><div class="mfill" id="db-mf"></div></div><div class="mmeta"><span>March 2026</span><span>78 / 100 tasks</span></div></div></div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="ct">💪 Strengths</div><div class="ilist" id="db-str"></div></div>
+    <div class="card"><div class="ct">⚠️ Areas to Improve</div><div class="ilist" id="db-wk"></div></div>
+    <div class="card"><div class="ct">🤖 AI Recommendations</div><div class="ilist" id="db-rec"></div></div>
+  </div>
+  <div style="height:18px"></div>
+</div>
+
+<!-- REPORTS -->
+<div class="page" id="page-reports">
+  <div class="topbar"><div><h1 class="ptitle">Reports</h1><p class="psub">AI-generated academic reports for Arjun Sharma</p></div><div class="tbr"><button class="tbtn">📤 Export PDF</button></div></div>
+  <div class="g3 mb15">
+    <div class="rc active" onclick="showRep('progress',this)"><span style="font-size:9px;font-weight:600;padding:2px 7px;border-radius:100px;background:rgba(0,229,160,.12);color:var(--jade);display:inline-block;margin-bottom:7px">WEEKLY</span><div class="rctitle">📈 Progress Report</div><div class="rcdesc">Overall weekly academic progress, streak data, and improvement summary.</div><div class="rcfoot"><span style="font-size:9.5px;color:var(--t3)">Mar 25, 2026</span><span style="font-size:9.5px;color:var(--jade)">View →</span></div></div>
+    <div class="rc" onclick="showRep('subject',this)"><span style="font-size:9px;font-weight:600;padding:2px 7px;border-radius:100px;background:rgba(167,139,250,.12);color:var(--violet);display:inline-block;margin-bottom:7px">SUBJECT</span><div class="rctitle">📚 Subject Analysis</div><div class="rcdesc">Deep dive into each subject's scores, trends, and weak topic breakdown.</div><div class="rcfoot"><span style="font-size:9.5px;color:var(--t3)">Mar 22, 2026</span><span style="font-size:9.5px;color:var(--jade)">View →</span></div></div>
+    <div class="rc" onclick="showRep('parent',this)"><span style="font-size:9px;font-weight:600;padding:2px 7px;border-radius:100px;background:rgba(255,185,48,.12);color:var(--amber);display:inline-block;margin-bottom:7px">PARENT</span><div class="rctitle">👨‍👩‍👧 Parent Summary</div><div class="rcdesc">Easy-to-read summary with highlights, action points, and upcoming deadlines.</div><div class="rcfoot"><span style="font-size:9.5px;color:var(--t3)">Mar 20, 2026</span><span style="font-size:9.5px;color:var(--jade)">View →</span></div></div>
+  </div>
+  <div class="card"><div class="ct" id="rep-title">📈 Progress Report</div><div id="rep-out" style="background:var(--ink3);border:1px solid var(--bd);border-radius:11px;padding:16px;min-height:160px"><div class="aibadge">🤖 AI-Generated · Mar 25, 2026</div><div class="rtext" id="rep-text"></div></div></div>
+  <div style="height:18px"></div>
+</div>
+
+<!-- ALERTS -->
+<div class="page" id="page-alerts">
+  <div class="topbar"><div><h1 class="ptitle">Alerts & Notifications</h1><p class="psub">Active alerts requiring your attention</p></div><div class="tbr"><button class="tbtn" onclick="markAllRead()">✅ Mark All Read</button></div></div>
+  <div class="tabrow">
+    <button class="tabb active" onclick="filterAlerts('all',this)">All (4)</button>
+    <button class="tabb" onclick="filterAlerts('critical',this)">🔴 Critical (1)</button>
+    <button class="tabb" onclick="filterAlerts('warning',this)">🟡 Warnings (2)</button>
+    <button class="tabb" onclick="filterAlerts('info',this)">🔵 Info (1)</button>
+  </div>
+  <div class="card" id="alerts-wrap"></div>
+  <div style="height:18px"></div>
+</div>
+
+<!-- SUBJECTS -->
+<div class="page" id="page-subjects">
+  <div class="topbar"><div><h1 class="ptitle">Subjects</h1><p class="psub">Detailed performance for Arjun · Class 10 CBSE</p></div></div>
+  <div class="g3s mb15" id="subj-grid"></div>
+  <div class="g2">
+    <div class="card"><div class="ct">📊 Score Comparison</div><div id="subj-bars"></div></div>
+    <div class="card"><div class="ct">⏱️ Time Invested vs Score</div><div id="subj-time"></div></div>
+  </div>
+  <div style="height:18px"></div>
+</div>
+
+<!-- ASSESSMENTS -->
+<div class="page" id="page-assessments">
+  <div class="topbar"><div><h1 class="ptitle">Assessments</h1><p class="psub">All test results and analytics for Arjun</p></div></div>
+  <div class="statrow">
+    <div class="statbox"><div class="sbval" style="color:var(--jade)">23</div><div class="sblbl">Tests Taken</div></div>
+    <div class="statbox"><div class="sbval" style="color:var(--sky)">84%</div><div class="sblbl">Avg Accuracy</div></div>
+    <div class="statbox"><div class="sbval" style="color:var(--amber)">87%</div><div class="sblbl">Avg Score</div></div>
+    <div class="statbox"><div class="sbval" style="color:var(--violet)">4.2</div><div class="sblbl">Class Rank Avg</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">📝 All Recent Tests</div><table class="stbl"><thead><tr><th>Test Name</th><th>Subject</th><th>Score</th><th>Accuracy</th><th>Rank</th><th>Date</th></tr></thead><tbody id="ass-scores"></tbody></table></div>
+    <div class="card"><div class="ct">📉 Score Trend (Last 8 Tests)</div><div style="position:relative;height:150px;margin-bottom:14px"><svg id="ass-trend" viewBox="0 0 400 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg></div><div class="ct">⚡ Accuracy vs Speed</div><div class="swrap" id="ass-scatter"><div class="stip" id="ass-stip"></div></div></div>
+  </div>
+  <div style="height:18px"></div>
+</div>
+
+<!-- GOALS -->
+<div class="page" id="page-goals">
+  <div class="topbar"><div><h1 class="ptitle">Goal Tracking</h1><p class="psub">Weekly and monthly academic goals</p></div><div class="tbr"><button class="tbtn">➕ Add Goal</button></div></div>
+  <div class="statrow">
+    <div class="statbox"><div class="sbval" style="color:var(--jade)">78%</div><div class="sblbl">Monthly Rate</div></div>
+    <div class="statbox"><div class="sbval" style="color:var(--amber)">6/7</div><div class="sblbl">Days Active</div></div>
+    <div class="statbox"><div class="sbval" style="color:var(--violet)">3/4</div><div class="sblbl">Weekly Tests</div></div>
+    <div class="statbox"><div class="sbval" style="color:var(--sky)">18/24</div><div class="sblbl">Chapters Done</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">🗓️ Weekly Goals</div><div id="goals-w"></div></div>
+    <div class="card"><div class="ct">📅 Monthly Goals</div><div id="goals-m"></div><div class="mwrap"><div class="mpct">78%</div><div class="mlbl">Monthly Completion · March 2026</div><div class="mbar"><div class="mfill" id="goals-mf"></div></div><div class="mmeta"><span>78 done</span><span>22 remaining</span></div></div></div>
+  </div>
+  <div class="card mb15"><div class="ct">📊 Goal Progress History (4 Weeks)</div><div style="position:relative;height:130px"><svg id="goals-trend" viewBox="0 0 600 130" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg></div></div>
+  <div style="height:18px"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="topbar"><div><h1 class="ptitle">Settings</h1><p class="psub">Manage your parent account and preferences</p></div></div>
+  <div class="g2">
+    <div>
+      <div class="card mb15">
+        <div class="ct">👩 Parent Profile</div>
+        <div class="srow"><div><div class="slbl">Full Name</div><div class="ssub">Displayed in reports</div></div><input class="sinput" value="Priya Sharma"/></div>
+        <div class="srow"><div><div class="slbl">Email Address</div><div class="ssub">For report delivery</div></div><input class="sinput" value="priya@gmail.com"/></div>
+        <div class="srow"><div><div class="slbl">Phone Number</div><div class="ssub">For SMS alerts</div></div><input class="sinput" value="+91 98765 43210"/></div>
+        <div class="srow"><div><div class="slbl">Language</div></div><select class="sselect"><option>English</option><option>Hindi</option><option>Tamil</option></select></div>
+        <button class="bsave">Save Profile</button>
+      </div>
+      <div class="card">
+        <div class="ct">🔒 Security</div>
+        <div class="srow"><div><div class="slbl">Change Password</div><div class="ssub">Last changed 45 days ago</div></div><button class="tbtn">Change →</button></div>
+        <div class="srow"><div><div class="slbl">Two-Factor Auth</div><div class="ssub">Extra login security</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div><div class="slbl">Active Sessions</div><div class="ssub">2 devices logged in</div></div><button class="bdanger">Revoke All</button></div>
+      </div>
+    </div>
+    <div>
+      <div class="card mb15">
+        <div class="ct">🔔 Notifications</div>
+        <div class="srow"><div><div class="slbl">Low Performance Alert</div><div class="ssub">Score drops below 70%</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div><div class="slbl">Missed Study Session</div><div class="ssub">No activity for 24h</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div><div class="slbl">Weekly Report Email</div><div class="ssub">Every Sunday 9 AM</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div><div class="slbl">Upcoming Exam Reminder</div><div class="ssub">7 days before exam</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div><div class="slbl">Achievement Unlock</div><div class="ssub">Streak milestones</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div><div class="slbl">SMS Alerts</div><div class="ssub">Critical alerts via SMS</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+      </div>
+      <div class="card">
+        <div class="ct">📊 Report Preferences</div>
+        <div class="srow"><div><div class="slbl">Report Frequency</div></div><select class="sselect"><option>Weekly</option><option>Bi-weekly</option><option>Monthly</option></select></div>
+        <div class="srow"><div><div class="slbl">Report Format</div></div><select class="sselect"><option>Detailed</option><option>Summary</option><option>Minimal</option></select></div>
+        <div class="srow"><div><div class="slbl">Include AI Insights</div><div class="ssub">AI-powered recommendations</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:10px">
+          <button class="tbtn">📤 Export Data</button>
+          <button class="tbtn">🔗 Link Another Child</button>
+          <button class="bdanger">Delete Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="height:18px"></div>
+</div>
+
+<!-- TEACHER CHAT -->
+<div class="page" id="page-chat">
+  <div class="topbar"><div><h1 class="ptitle">Teacher Chat</h1><p class="psub">Message Arjun's teachers directly</p></div></div>
+  <div class="g2" style="align-items:start">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:12px 15px;border-bottom:1px solid var(--bd2);font-family:var(--fd);font-size:12.5px;font-weight:700;color:var(--t1)">Conversations</div>
+      <div id="chat-contacts"></div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;height:500px">
+      <div style="padding-bottom:11px;border-bottom:1px solid var(--bd2);margin-bottom:11px;display:flex;align-items:center;gap:9px">
+        <div style="width:34px;height:34px;border-radius:8px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.18);display:flex;align-items:center;justify-content:center;font-size:17px">👩‍🏫</div>
+        <div><div id="chat-tname" style="font-family:var(--fd);font-size:12.5px;font-weight:700;color:var(--t1)">Mrs. Meena Rao</div><div style="font-size:10px;color:var(--jade)">● Online · Mathematics</div></div>
+      </div>
+      <div id="chat-msgs" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:11px;padding:2px 0"></div>
+      <div class="cinpwrap"><textarea class="cinp" id="chat-in" rows="2" placeholder="Type your message..."></textarea><button class="bsend" onclick="sendMsg()">Send ↑</button></div>
+    </div>
+  </div>
+  <div style="height:18px"></div>
+</div>
+
+</main>
+</div>
+<script>
+// ── DATA ──
+const SUBJ=[
+  {name:"Mathematics",icon:"🔢",score:92,prev:88,color:"var(--jade)",  bg:"rgba(0,229,160,.1)",  tag:"strong",time:5.2},
+  {name:"Physics",    icon:"⚛️",score:85,prev:80,color:"var(--sky)",   bg:"rgba(56,189,248,.1)", tag:"strong",time:4.0},
+  {name:"Chemistry",  icon:"🧪",score:78,prev:80,color:"var(--amber)", bg:"rgba(255,185,48,.1)", tag:"avg",   time:3.5},
+  {name:"Biology",    icon:"🧬",score:88,prev:82,color:"var(--violet)",bg:"rgba(167,139,250,.1)",tag:"strong",time:2.8},
+  {name:"English",    icon:"📖",score:65,prev:70,color:"var(--coral)", bg:"rgba(255,107,107,.1)",tag:"weak",  time:1.8},
+  {name:"History",    icon:"🏛️",score:72,prev:68,color:"#f472b6",     bg:"rgba(244,114,182,.1)",tag:"avg",   time:1.2},
+];
+const TESTS=[
+  {name:"Ch.5 Quadratics",  sub:"Math",   score:94,acc:91,rank:"2nd", date:"Mar 20",grade:"a"},
+  {name:"Wave Optics Quiz",  sub:"Physics",score:82,acc:85,rank:"5th", date:"Mar 18",grade:"b"},
+  {name:"Organic Chemistry", sub:"Chem",   score:74,acc:78,rank:"8th", date:"Mar 15",grade:"c"},
+  {name:"Cell Biology Test", sub:"Bio",    score:90,acc:88,rank:"3rd", date:"Mar 12",grade:"a"},
+  {name:"English Grammar",   sub:"Eng",    score:63,acc:67,rank:"14th",date:"Mar 8", grade:"d"},
+  {name:"Thermodynamics",    sub:"Physics",score:80,acc:82,rank:"6th", date:"Mar 5", grade:"b"},
+  {name:"Algebra Revision",  sub:"Math",   score:96,acc:94,rank:"1st", date:"Mar 1", grade:"a"},
+  {name:"Prose & Poetry",    sub:"Eng",    score:70,acc:72,rank:"10th",date:"Feb 26",grade:"c"},
+];
+const ALERTS=[
+  {type:"critical",icon:"❗",title:"Low Performance — English",     desc:"Score dropped below 70%. Immediate attention needed.",   time:"2h ago",  read:false},
+  {type:"warning", icon:"⏰",title:"Missed Study Session",           desc:"No activity logged on Sunday, March 22.",               time:"1d ago",  read:false},
+  {type:"warning", icon:"📅",title:"Board Exam in 45 Days",         desc:"Final revision schedule should begin this week.",        time:"3d ago",  read:false},
+  {type:"info",    icon:"🏆",title:"Top 3 in Mathematics",           desc:"Ranked 2nd in class for Chapter 5 assessment.",          time:"4d ago",  read:true},
+];
+const GOALS_W=[
+  {name:"Daily 2h Study Goal",       pct:85,color:"var(--jade)",  sub:"6 of 7 days this week"},
+  {name:"Complete Chapter 6 (Math)", pct:60,color:"var(--sky)",   sub:"3 of 5 exercises done"},
+  {name:"Weekly Test Attempt",       pct:75,color:"var(--violet)",sub:"3 of 4 tests done"},
+  {name:"Vocabulary Practice",       pct:40,color:"var(--amber)", sub:"2 of 5 sessions"},
+];
+const GOALS_M=[
+  {name:"Chapter Completion",pct:75,color:"var(--jade)",  sub:"18 of 24 chapters"},
+  {name:"Mock Test Series",  pct:50,color:"var(--coral)", sub:"5 of 10 mocks done"},
+  {name:"Revision Notes",    pct:90,color:"var(--violet)",sub:"9 of 10 subjects"},
+];
+const STR=[
+  {title:"Mathematics",       desc:"Consistently 90%+. Excellent problem-solving speed."},
+  {title:"Biology",           desc:"Strong conceptual clarity. Top in diagrams & theory."},
+  {title:"Physics Numericals",desc:"High accuracy (88%) on calculation-based questions."},
+];
+const WK=[
+  {title:"English Essay Writing",desc:"Score trend declining. Grammar & vocabulary need work."},
+  {title:"Organic Chemistry",    desc:"Reaction mechanisms causing frequent errors."},
+  {title:"Time Management",      desc:"Last 3 tests show incomplete final sections."},
+];
+const REC=[
+  {title:"Schedule English Daily",  desc:"30 min grammar exercises recommended by AI tutor."},
+  {title:"Organic Chemistry Cards", desc:"Review NCERT mechanisms — 15 mins daily via EduAI."},
+  {title:"Mock Test Sundays",       desc:"Full 3-hour mocks to build exam stamina and pacing."},
+];
+const REP_TEXT={
+  progress:`Arjun has shown steady improvement this week, with an overall performance score of 87% — up from 81% last week. He completed 4 tests with an average accuracy of 84%, and maintained a 14-day study streak.
+
+Key Highlights:
+• Mathematics performance is exceptional at 92%, ranking 2nd in class.
+• Biology scores improved by 6 percentage points this week.
+• English remains a concern — scores dropped to 63% in the latest grammar test.
+
+Study Consistency: 92% — Arjun studied on 6 out of 7 days this week. The one missed session (Sunday) may be contributing to slight fatigue in English sessions.
+
+Recommendation: Focus attention on English grammar and essay writing. Consider enrolling in the AI-powered writing coach module available in EduAI.`,
+  subject:`Subject-wise Performance Analysis · March 2026
+
+📐 Mathematics — 92% (↑ 4%) — STRONG
+Arjun is performing exceptionally well. Algebraic problem-solving speed is above class average. Chapter 5 test ranked 2nd in class.
+
+⚛️ Physics — 85% (↑ 5%) — STRONG
+Good understanding of concepts. Numerical accuracy at 85%. Wave Optics showed strong performance.
+
+🧪 Chemistry — 78% (↓ 2%) — AVERAGE
+Slight dip noted. Organic Chemistry mechanisms are causing errors. Recommend daily 15-minute flashcard review.
+
+🧬 Biology — 88% (↑ 6%) — STRONG
+Best improvement this week. Diagram-based questions answered with high accuracy.
+
+📖 English — 65% (↓ 5%) — NEEDS WORK
+Lowest-performing subject. Essay structure and grammar are weak areas. Immediate intervention recommended.
+
+🏛️ History — 72% (↑ 4%) — AVERAGE
+Improving steadily. Timeline memorization and cause-effect analysis are getting better.`,
+  parent:`Dear Priya,
+
+Here's a quick summary of Arjun's performance this week:
+
+✅ What's going well:
+Arjun is studying consistently — 6 days out of 7 this week. He is performing very well in Mathematics and Biology, often ranking in the top 3 of his class. His 14-day study streak shows strong discipline.
+
+⚠️ What needs attention:
+English is a concern. Scores have dropped below 70% in the last 2 tests. We recommend daily 20–30 minute grammar and reading practice. Organic Chemistry also needs more revision time.
+
+📅 Coming up:
+Board exams are 45 days away. It is a good time to begin full-length mock test practice on Sundays.
+
+📊 This week in numbers:
+Overall Score: 87% | Study Time: 18.5h | Tests Taken: 4 | Streak: 14 days
+
+Thank you for using EduAI. We're here to support Arjun's learning journey.
+
+— The EduAI Team`
+};
+const CHAT_C=[
+  {name:"Mrs. Meena Rao",sub:"Mathematics",av:"👩‍🏫",status:"online",unread:0},
+  {name:"Mr. Ravi Verma", sub:"Physics",   av:"👨‍🏫",status:"away",  unread:2},
+  {name:"Dr. Anita Nair",  sub:"Chemistry", av:"👩‍🔬",status:"offline",unread:0},
+  {name:"Mrs. Sunita Das", sub:"Biology",   av:"🧬",  status:"online",unread:1},
+  {name:"Mr. James Peter", sub:"English",   av:"📖",  status:"offline",unread:0},
+];
+const CHAT_INIT=[
+  {from:"teacher",text:"Good morning! Arjun did very well in the Chapter 5 test — ranked 2nd in class. His algebraic reasoning is strong.",time:"9:05 AM"},
+  {from:"parent", text:"That's wonderful to hear! We've been pushing him to practice every evening.",time:"9:08 AM"},
+  {from:"teacher",text:"It's definitely showing results. I'd recommend he start on Chapter 6 — Quadratic Equations — this week. Key topic for boards.",time:"9:10 AM"},
+  {from:"parent", text:"Noted. Should we increase his practice sessions for Maths?",time:"9:12 AM"},
+  {from:"teacher",text:"Current effort is great. Just make sure he attempts the EduAI practice sets for Chapter 6. They cover all board patterns.",time:"9:14 AM"},
+];
+
+// ── NAVIGATION ──
+function nav(page,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>{n.classList.remove('active');const d=n.querySelector('.ndot');if(d)d.remove();});
+  document.getElementById('page-'+page).classList.add('active');
+  if(btn){btn.classList.add('active');const d=document.createElement('span');d.className='ndot';btn.appendChild(d);}
+  const map={reports:initReports,alerts:initAlerts,subjects:initSubjects,assessments:initAssess,goals:initGoals,chat:initChat};
+  if(map[page]) map[page]();
+}
+
+// ── HELPERS ──
+function subjRows(id,data){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=data.map(s=>{
+    const t=s.score>s.prev?'↑':s.score<s.prev?'↓':'→';
+    const tc=s.score>s.prev?'var(--jade)':s.score<s.prev?'var(--coral)':'var(--t2)';
+    const tl=s.tag==='strong'?'Strong':s.tag==='weak'?'Needs Work':'Average';
+    return `<div class="sr"><div class="sicon" style="background:${s.bg}">${s.icon}</div><div class="sname">${s.name}</div><div class="sbw"><div class="sbt"><div class="sbf" style="background:${s.color};width:${s.score}%"></div></div></div><div class="spct" style="color:${s.color}">${s.score}%</div><div class="strend" style="color:${tc}">${t}</div><span class="stag ${s.tag}">${tl}</span></div>`;
+  }).join('');
+}
+function drawRadials(id){
+  const el=document.getElementById(id);if(!el)return;
+  const data=[{l:"Tests Passed",v:87,c:"#00e5a0"},{l:"HW Done",v:71,c:"#ffb930"},{l:"Attendance",v:96,c:"#a78bfa"}];
+  el.innerHTML=data.map(d=>{
+    const o=157-(d.v/100)*157;
+    return `<div class="ritem"><svg class="rsvg" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle class="rtrack" cx="30" cy="30" r="25" transform="rotate(-90 30 30)"/><circle class="rarc" cx="30" cy="30" r="25" stroke="${d.c}" style="stroke-dashoffset:${o}" transform="rotate(-90 30 30)"/><text x="30" y="30" fill="${d.c}" font-family="Syne,sans-serif" font-size="11" font-weight="800" dominant-baseline="middle" text-anchor="middle">${d.v}%</text></svg><div class="rlabel">${d.l}</div></div>`;
+  }).join('');
+}
+function drawStreak(id){
+  const el=document.getElementById(id);if(!el)return;
+  const p=[1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1];
+  el.innerHTML=p.map((v,i)=>`<div title="${v?'Studied':'Missed'}" style="flex:1;height:5px;border-radius:2px;background:${v?(i>=p.length-14?'var(--jade)':'rgba(0,229,160,.3)'):'var(--bd)'}"></div>`).join('');
+}
+function drawHeatmap(lid,mid){
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],weeks=['W7','W8','W9','W10','W11'];
+  const lv=[[2,3,4,2,3,1,0],[3,4,4,3,4,2,1],[4,3,3,4,4,2,0],[2,4,4,3,3,3,1],[4,4,3,4,3,0,0]];
+  const l=document.getElementById(lid);if(l)l.innerHTML=weeks.map(w=>`<div class="wlab">${w}</div>`).join('');
+  const m=document.getElementById(mid);if(!m)return;
+  m.innerHTML=days.map((d,di)=>`<div class="hmrow"><div class="hmdl">${d}</div><div class="hmcells">${lv.map((wk,wi)=>`<div class="hmc l${wk[di]}" style="animation-delay:${(wi*7+di)*.02}s" title="${d} ${weeks[wi]}: ${wk[di]}h study"></div>`).join('')}</div></div>`).join('');
+}
+function drawTPS(id){
+  const el=document.getElementById(id);if(!el)return;
+  const mx=Math.max(...SUBJ.map(s=>s.time));
+  el.innerHTML=SUBJ.map(s=>`<div class="trow"><span style="font-size:12px;width:18px">${s.icon}</span><div class="tname">${s.name.length>9?s.name.slice(0,8)+'…':s.name}</div><div class="tbt"><div class="tbf" style="background:${s.color};width:${(s.time/mx)*100}%"></div></div><div class="ttime">${s.time}h</div></div>`).join('');
+}
+function drawScores(id,tests){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=tests.map(t=>`<tr><td>${t.name}</td><td style="color:var(--t3);font-size:10.5px">${t.sub}</td><td><span class="spill ${t.grade}">${t.score}%</span></td><td style="font-family:var(--fm);font-size:10.5px">${t.acc}%</td><td style="font-size:10.5px;color:var(--t2)">${t.rank}</td><td style="font-size:10.5px;color:var(--t3)">${t.date}</td></tr>`).join('');
+}
+function drawTrend(id,scores,labels,W,H){
+  const svg=document.getElementById(id);if(!svg)return;
+  const p={t:13,r:14,b:24,l:26},cW=W-p.l-p.r,cH=H-p.t-p.b;
+  const mn=Math.min(...scores)-8,mx=100;
+  const pts=scores.map((s,i)=>({x:p.l+(i/(scores.length-1))*cW,y:p.t+cH-((s-mn)/(mx-mn))*cH,s,l:labels[i]}));
+  const ln=pts.map((pt,i)=>`${i===0?'M':'L'}${pt.x},${pt.y}`).join(' ');
+  const ar=ln+` L${pts[pts.length-1].x},${p.t+cH} L${pts[0].x},${p.t+cH} Z`;
+  const gid='g'+id;
+  const gr=[60,70,80,90,100].map(v=>{const y=p.t+cH-((v-mn)/(mx-mn))*cH;return `<line x1="${p.l}" y1="${y}" x2="${p.l+cW}" y2="${y}" stroke="var(--bd2)" stroke-width="0.8"/><text x="${p.l-3}" y="${y+3.5}" text-anchor="end" font-size="7.5" fill="var(--t3)">${v}</text>`;}).join('');
+  const xl=pts.map(pt=>`<text x="${pt.x}" y="${H-3}" text-anchor="middle" font-size="7" fill="var(--t3)">${pt.l}</text>`).join('');
+  const dots=pts.map(pt=>`<circle cx="${pt.x}" cy="${pt.y}" r="4" fill="var(--jade)" stroke="var(--ink2)" stroke-width="2"/><text x="${pt.x}" y="${pt.y-7}" text-anchor="middle" font-size="8" fill="var(--jade)">${pt.s}%</text>`).join('');
+  svg.innerHTML=`<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(0,229,160,.18)"/><stop offset="100%" stop-color="rgba(0,229,160,0)"/></linearGradient></defs>${gr}${xl}<path d="${ar}" fill="url(#${gid})"/><path d="${ln}" fill="none" stroke="var(--jade)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${dots}`;
+}
+function drawScatter(wid,tid){
+  const wrap=document.getElementById(wid);if(!wrap)return;
+  const tip=document.getElementById(tid);
+  const W=wrap.offsetWidth||300,H=130,p={t:10,r:12,b:24,l:28},cW=W-p.l-p.r,cH=H-p.t-p.b;
+  const data=[{l:"Math",a:91,s:78,c:"var(--jade)"},{l:"Physics",a:85,s:65,c:"var(--sky)"},{l:"Chem",a:78,s:55,c:"var(--amber)"},{l:"Bio",a:88,s:72,c:"var(--violet)"},{l:"English",a:67,s:80,c:"var(--coral)"}];
+  [...wrap.children].forEach(c=>{if(c!==tip)c.remove();});
+  const sv=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  sv.setAttribute('width','100%');sv.setAttribute('height',H);sv.style.cssText='position:absolute;top:0;left:0;pointer-events:none';
+  const ml=(x1,y1,x2,y2)=>{const l=document.createElementNS('http://www.w3.org/2000/svg','line');[['x1',x1],['y1',y1],['x2',x2],['y2',y2],['stroke','var(--bd2)']].forEach(([a,v])=>l.setAttribute(a,v));return l;};
+  sv.appendChild(ml(p.l,p.t+cH,p.l+cW,p.t+cH));sv.appendChild(ml(p.l,p.t,p.l,p.t+cH));
+  const mt=(x,y,txt,rot)=>{const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','8');t.setAttribute('fill','var(--t3)');if(rot)t.setAttribute('transform',rot);t.textContent=txt;sv.appendChild(t);};
+  mt(p.l+cW/2,H-3,'Speed →');mt(-(p.t+cH/2),10,'Accuracy →','rotate(-90)');
+  wrap.appendChild(sv);
+  data.forEach(d=>{
+    const x=p.l+((d.s-50)/40)*cW,y=p.t+cH-((d.a-60)/40)*cH;
+    const dot=document.createElement('div');dot.className='spt';dot.style.cssText=`background:${d.c};left:${x}px;top:${y}px`;
+    const lbl=document.createElement('div');lbl.style.cssText=`position:absolute;font-size:8.5px;color:var(--t3);left:${x+7}px;top:${y-5}px;pointer-events:none`;lbl.textContent=d.l;
+    dot.addEventListener('mouseenter',e=>{if(!tip)return;tip.style.display='block';tip.innerHTML=`<b style="color:${d.c}">${d.l}</b> — Acc: ${d.a}% · Speed: ${d.s}`;const r=wrap.getBoundingClientRect(),dr=e.target.getBoundingClientRect();tip.style.left=(dr.left-r.left)+'px';tip.style.top=(dr.top-r.top-38)+'px';});
+    dot.addEventListener('mouseleave',()=>{if(tip)tip.style.display='none';});
+    wrap.appendChild(dot);wrap.appendChild(lbl);
+  });
+}
+function alertHTML(data){
+  return data.length?data.map(a=>`<div class="ai ${a.type}" style="${a.read?'opacity:.55':''}"><div class="aic ${a.type}">${a.icon}</div><div style="flex:1;min-width:0"><div class="atitle">${a.read?a.title:'<b>'+a.title+'</b>'}</div><div class="adesc">${a.desc}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0"><div class="adot ${a.type}" style="${a.read?'opacity:0':''}"></div><div class="atime">${a.time}</div></div></div>`).join('')
+  :'<div style="color:var(--t3);font-size:12px;padding:18px;text-align:center">No alerts in this category</div>';
+}
+function goalRows(goals,id){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=goals.map(g=>`<div class="gi"><div class="gh"><div class="gn">${g.name}</div><div class="gp" style="color:${g.color}">${g.pct}%</div></div><div class="gtr"><div class="gf" style="background:${g.color};width:${g.pct}%"></div></div><div class="gsub">${g.sub}</div></div>`).join('');
+}
+function insightList(data,id,type){
+  const el=document.getElementById(id);if(!el)return;
+  const dc={strength:'j',weakness:'c',recommend:'v'}[type];
+  el.innerHTML=data.map(s=>`<div class="iitem ${type}"><div class="idot ${dc}"></div><div><div class="ititle">${s.title}</div><div class="idesc">${s.desc}</div></div></div>`).join('');
+}
+
+// ── PAGE INITS ──
+function initDashboard(){
+  subjRows('db-subj',SUBJ);
+  drawRadials('db-radials');
+  drawStreak('db-streak');
+  drawHeatmap('db-wl','db-hm');
+  drawTPS('db-tps');
+  drawScores('db-scores',TESTS.slice(0,5));
+  document.getElementById('db-alerts').innerHTML=alertHTML(ALERTS);
+  goalRows(GOALS_W,'db-goals');
+  insightList(STR,'db-str','strength');
+  insightList(WK,'db-wk','weakness');
+  insightList(REC,'db-rec','recommend');
+  drawTrend('db-trend',TESTS.slice(0,5).map(t=>t.score).reverse(),TESTS.slice(0,5).map(t=>t.date).reverse(),400,110);
+  setTimeout(()=>{const r=document.getElementById('hring');if(r){r.style.transition='stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)';r.style.strokeDashoffset=283-(.87*283);}},300);
+  setTimeout(()=>{const f=document.getElementById('db-mf');if(f)f.style.width='78%';},400);
+  setTimeout(()=>drawScatter('db-scatter','db-stip'),150);
+}
+function initReports(){
+  showRep('progress',document.querySelector('.rc.active'));
+}
+function showRep(type,btn){
+  document.querySelectorAll('.rc').forEach(c=>c.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const titles={progress:'📈 Progress Report',subject:'📚 Subject Analysis',parent:'👨‍👩‍👧 Parent Summary'};
+  document.getElementById('rep-title').textContent=titles[type];
+  document.getElementById('rep-out').innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:90px;gap:9px"><div class="spinner"></div><p style="color:var(--t2);font-size:11.5px">Generating AI report...</p></div>';
+  setTimeout(()=>{
+    const text=REP_TEXT[type]||'Report unavailable.';
+    document.getElementById('rep-out').innerHTML=`<div class="aibadge">🤖 AI-Generated · ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div><div class="rtext" id="rep-text"></div>`;
+    const el=document.getElementById('rep-text');let i=0;
+    const iv=setInterval(()=>{if(i<text.length){el.textContent+=text[i++];}else clearInterval(iv);},5);
+  },900);
+}
+function initAlerts(){filterAlerts('all',document.querySelector('.tabb'));}
+function filterAlerts(type,btn){
+  document.querySelectorAll('.tabb').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const d=type==='all'?ALERTS:ALERTS.filter(a=>a.type===type);
+  document.getElementById('alerts-wrap').innerHTML=alertHTML(d);
+}
+function markAllRead(){
+  ALERTS.forEach(a=>a.read=true);
+  filterAlerts('all',document.querySelector('.tabb'));
+  const b=document.getElementById('abadge');if(b)b.style.display='none';
+}
+function initSubjects(){
+  const g=document.getElementById('subj-grid');if(!g)return;
+  g.innerHTML=SUBJ.map(s=>{
+    const t=s.score>s.prev?'↑':s.score<s.prev?'↓':'→';
+    const tc=s.score>s.prev?'var(--jade)':s.score<s.prev?'var(--coral)':'var(--t2)';
+    const tl=s.tag==='strong'?'Strong':s.tag==='weak'?'Needs Work':'Average';
+    return `<div class="sdc"><div style="display:flex;align-items:center;gap:9px;margin-bottom:9px"><div class="sdci" style="background:${s.bg}">${s.icon}</div><div><div style="font-family:var(--fd);font-size:12.5px;font-weight:700;color:var(--t1)">${s.name}</div><span class="stag ${s.tag}">${tl}</span></div></div><div style="font-family:var(--fd);font-size:19px;font-weight:800;color:${s.color};line-height:1;margin:3px 0 7px">${s.score}%</div><div class="sdcbt"><div class="sdcbf" style="background:${s.color};width:${s.score}%"></div></div><div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--t3)"><span>Prev: ${s.prev}%</span><span style="color:${tc}">Trend ${t} ${Math.abs(s.score-s.prev)}%</span><span>${s.time}h/wk</span></div></div>`;
+  }).join('');
+  const sb=document.getElementById('subj-bars');if(sb)sb.innerHTML=SUBJ.map(s=>`<div style="display:flex;align-items:center;gap:9px;margin-bottom:9px"><div style="font-size:13px;width:18px">${s.icon}</div><div style="width:78px;font-size:11px;color:var(--t1)">${s.name}</div><div style="flex:1;height:7px;background:var(--bd2);border-radius:100px;overflow:hidden"><div style="height:100%;border-radius:100px;background:${s.color};width:${s.score}%;transition:width 1s ease"></div></div><div style="width:28px;text-align:right;font-family:var(--fm);font-size:10.5px;color:${s.color}">${s.score}%</div></div>`).join('');
+  const st=document.getElementById('subj-time');if(st)st.innerHTML=SUBJ.map(s=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="font-size:12px;width:16px">${s.icon}</div><div style="width:76px;font-size:10.5px;color:var(--t2)">${s.name}</div><div style="width:26px;text-align:right;font-family:var(--fm);font-size:9.5px;color:var(--t3)">${s.time}h</div><div style="flex:1;height:5px;background:var(--bd2);border-radius:100px;overflow:hidden"><div style="height:100%;border-radius:100px;background:${s.color};width:${(s.time/5.5)*100}%;opacity:.75;transition:width 1s ease"></div></div><div style="width:26px;font-family:var(--fm);font-size:9.5px;color:${s.color}">${s.score}%</div></div>`).join('')+'<div style="font-size:9px;color:var(--t3);margin-top:5px">Bar = time · Right value = score</div>';
+}
+function initAssess(){
+  drawScores('ass-scores',TESTS);
+  drawTrend('ass-trend',TESTS.map(t=>t.score).reverse(),TESTS.map(t=>t.date).reverse(),400,150);
+  setTimeout(()=>drawScatter('ass-scatter','ass-stip'),150);
+}
+function initGoals(){
+  goalRows(GOALS_W,'goals-w');
+  goalRows(GOALS_M,'goals-m');
+  setTimeout(()=>{const f=document.getElementById('goals-mf');if(f)f.style.width='78%';},200);
+  const svg=document.getElementById('goals-trend');if(!svg)return;
+  const weeks=['W8','W9','W10','W11'];
+  const series=[{l:'Study Goal',sc:[70,75,80,85],c:'#00e5a0'},{l:'Test Goal',sc:[50,60,65,75],c:'#a78bfa'},{l:'Chapters',sc:[55,60,70,75],c:'#ffb930'}];
+  const W=600,H=130,p={t:14,r:18,b:22,l:28},cW=W-p.l-p.r,cH=H-p.t-p.b;
+  let out='<defs>';
+  series.forEach((s,i)=>out+=`<linearGradient id="gg${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${s.c}28"/><stop offset="100%" stop-color="transparent"/></linearGradient>`);
+  out+='</defs>';
+  [50,60,70,80,90].forEach(v=>{const y=p.t+cH-((v-45)/55)*cH;out+=`<line x1="${p.l}" y1="${y}" x2="${p.l+cW}" y2="${y}" stroke="var(--bd2)" stroke-width="0.7"/><text x="${p.l-3}" y="${y+3}" text-anchor="end" font-size="7.5" fill="var(--t3)">${v}</text>`;});
+  weeks.forEach((w,i)=>{const x=p.l+(i/(weeks.length-1))*cW;out+=`<text x="${x}" y="${H-3}" text-anchor="middle" font-size="8" fill="var(--t3)">${w}</text>`;});
+  series.forEach((s,si)=>{
+    const pts=s.sc.map((v,i)=>({x:p.l+(i/(weeks.length-1))*cW,y:p.t+cH-((v-45)/55)*cH}));
+    const ln=pts.map((pt,i)=>`${i===0?'M':'L'}${pt.x},${pt.y}`).join(' ');
+    out+=`<path d="${ln} L${pts[pts.length-1].x},${p.t+cH} L${pts[0].x},${p.t+cH} Z" fill="url(#gg${si})"/>`;
+    out+=`<path d="${ln}" fill="none" stroke="${s.c}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>`;
+    pts.forEach(pt=>out+=`<circle cx="${pt.x}" cy="${pt.y}" r="3" fill="${s.c}" stroke="var(--ink2)" stroke-width="1.5"/>`);
+  });
+  const leg=p.l;series.forEach((s,i)=>{const x=leg+i*130;out+=`<circle cx="${x+5}" cy="${H-1}" r="3.5" fill="${s.c}"/><text x="${x+13}" y="${H+2}" font-size="9" fill="var(--t2)">${s.l}</text>`;});
+  svg.innerHTML=out;
+}
+function initChat(){
+  const sc={online:'var(--jade)',away:'var(--amber)',offline:'var(--t3)'};
+  document.getElementById('chat-contacts').innerHTML=CHAT_C.map((c,i)=>`<div onclick="selectContact(${i},this)" style="display:flex;align-items:center;gap:9px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--bd2);transition:background .2s;background:${i===0?'rgba(0,229,160,.05)':'transparent'}"><div style="width:32px;height:32px;border-radius:8px;background:var(--ink4);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:15px;position:relative;flex-shrink:0">${c.av}<div style="position:absolute;bottom:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:${sc[c.status]};border:2px solid var(--ink2)"></div></div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--t1)">${c.name}</div><div style="font-size:10px;color:var(--t2)">${c.sub}</div></div>${c.unread?`<span style="background:var(--coral);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:100px">${c.unread}</span>`:''}</div>`).join('');
+  const msgs=document.getElementById('chat-msgs');if(!msgs)return;
+  msgs.innerHTML=CHAT_INIT.map(m=>`<div class="chatmsg ${m.from==='parent'?'sent':''}"><div class="cav2">${m.from==='teacher'?'👩‍🏫':'👩'}</div><div><div class="cbub ${m.from==='teacher'?'recv':'sent'}">${m.text}</div><div class="cmeta" style="${m.from==='parent'?'text-align:right':''}">${m.time}</div></div></div>`).join('');
+  msgs.scrollTop=msgs.scrollHeight;
+}
+function selectContact(i,el){
+  document.querySelectorAll('#chat-contacts>div').forEach((d,j)=>d.style.background=j===i?'rgba(0,229,160,.05)':'transparent');
+  document.getElementById('chat-tname').textContent=CHAT_C[i].name;
+}
+function sendMsg(){
+  const inp=document.getElementById('chat-in');const txt=inp.value.trim();if(!txt)return;
+  const msgs=document.getElementById('chat-msgs');
+  const now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  msgs.innerHTML+=`<div class="chatmsg sent"><div class="cav2">👩</div><div><div class="cbub sent">${txt}</div><div class="cmeta" style="text-align:right">${now}</div></div></div>`;
+  inp.value='';msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{msgs.innerHTML+=`<div class="chatmsg"><div class="cav2">👩‍🏫</div><div><div class="cbub recv">Thank you! I'll review and respond shortly regarding Arjun's progress.</div><div class="cmeta">${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div></div></div>`;msgs.scrollTop=msgs.scrollHeight;},1600);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&document.activeElement.id==='chat-in'){e.preventDefault();sendMsg();}});
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',()=>{
+  initDashboard();
+});
+</script>
+</body>
+</html>
